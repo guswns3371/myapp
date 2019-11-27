@@ -61,5 +61,5 @@ if (doitnow) {
 
 
 
-export { doitnow, serverKey, push_data, myfcm,client_token, make_noti ,title2,body2};
+exports = { doitnow, serverKey, push_data, myfcm,client_token, make_noti ,title2,body2};
 

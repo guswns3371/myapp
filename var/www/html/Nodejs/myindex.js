@@ -1,18 +1,38 @@
 //mystart.js 파일로 가봐라
-import {push_data} from "./myfcm";
+//import push_data from './myfcm';
 
 var mysql = require('mysql');
-
-var con = mysql.createConnection({
+var db_config = {
     host: "localhost",
     user: "root",
     password: "wnsgusgk3537",
     database: "test"
-});
+};
 
-con.connect(function(err) {
-    if (err) throw err;
-});
+var connection;
+
+
+function handleDisconnect() {
+    connection = mysql.createConnection(db_config);
+
+    connection.connect(function (err) {
+        if (err){
+            console.log("error when connecting to db : ",err);
+            setTimeout(handleDisconnect,2000);
+        }
+    });
+
+    connection.on('error',function (err) {
+        console.log('db error',err);
+        if (err.code === 'PROTOCOL_CONNECTION_LOST'){
+            handleDisconnect();
+        }else {
+            throw err;
+        }
+    });
+}
+
+handleDisconnect();
 
 const fcm = require('./myfcm')
 const express = require('express')
@@ -346,7 +366,7 @@ io.on('connection', function(socket){
     });
 
     socket.on('social reply message', function(msg){
-
+//????
         console.log("_Reply Message useridx " + msg['reply_useridx']);
         console.log("_Reply Message username " + msg['reply_username']);
         console.log("_Reply Message roomidx " + msg['reply_roomidx']);
